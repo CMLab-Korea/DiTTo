@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="DiTTo: Scalable Order-aware All-in-One Image Restoration Agent">
+<meta name="keywords" content="DiTTo, Image Restoration, Agent, VLM, All-in-One, Order-aware, NeurIPS">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DiTTo: Scalable Order-aware All-in-One Image Restoration Agent</title>
+<link rel="icon" type="image/png" href="./images/icon.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/img-comparison-slider@8/dist/index.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/img-comparison-slider@8/dist/styles.css"/>
+
+<style>
+:root{
+  --lilac-50:#f7f4fe;
+  --lilac-100:#efeafe;
+  --lilac-200:#e2d8fb;
+  --lilac-300:#cbb8f6;
+  --lilac-400:#ad8eef;
+  --lilac-500:#8b6bd9;   /* primary */
+  --lilac-600:#6f4fc0;
+  --lilac-700:#553a99;
+  --ink:#2b2540;
+  --ink-soft:#5a5270;
+  --paper:#ffffff;
+  --paper-2:#fbf9ff;
+  --line:#ece5fb;
+  --accent-grad:linear-gradient(110deg,#ad8eef 0%,#8b6bd9 55%,#6f4fc0 100%);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:
+    radial-gradient(1200px 600px at 80% -10%, #f1ebff 0%, rgba(241,235,255,0) 60%),
+    radial-gradient(1000px 500px at -10% 10%, #f6f2ff 0%, rgba(246,242,255,0) 55%),
+    var(--paper);
+  color:var(--ink);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+.container.is-max-desktop{max-width:1040px}
+
+/* Typography */
+h1,h2,h3,h4,h5,h6,.title{color:var(--ink) !important;font-family:'Plus Jakarta Sans',sans-serif}
+.display-serif{font-family:'Fraunces',serif}
+.title{letter-spacing:-.01em}
+.subtitle{color:var(--ink-soft) !important}
+strong{color:var(--lilac-700);font-weight:700}
+a{color:var(--lilac-600);transition:color .25s ease}
+a:hover{color:var(--lilac-700)}
+mono,code,.mono{font-family:'JetBrains Mono',monospace}
+
+.gradient-text{
+  background:var(--accent-grad);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-size:200% auto;animation:shine 6s linear infinite;
+  font-weight:800;
+}
+@keyframes shine{to{background-position:200% center}}
+
+/* Hero */
+.hero-wrap{position:relative;overflow:hidden}
+.blob-bg{
+  position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(420px 420px at 22% 30%, rgba(173,142,239,.18), transparent 70%),
+    radial-gradient(360px 360px at 82% 22%, rgba(139,107,217,.16), transparent 70%);
+  filter:blur(2px);
+}
+.hero-body{position:relative;z-index:1}
+.project-mascot{
+  width:230px;height:auto;
+  filter:drop-shadow(0 24px 40px rgba(111,79,192,.28));
+  animation:float 6s ease-in-out infinite;
+}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+
+.venue-badge{
+  display:inline-block;padding:7px 18px;margin-top:6px;
+  font-size:.92rem;font-weight:700;letter-spacing:.06em;
+  border-radius:999px;color:#fff;background:var(--accent-grad);
+  box-shadow:0 8px 22px rgba(139,107,217,.35);
+}
+.review-note{color:var(--ink-soft);font-size:.85rem;margin-top:8px;letter-spacing:.02em}
+
+.publication-authors .author-block{margin:0 .35rem;font-size:1.05rem}
+.affil{color:var(--ink-soft);font-size:1rem}
+
+/* Buttons */
+.button.is-lilac{
+  background:#fff;color:var(--lilac-700);
+  border:1.5px solid var(--lilac-200);
+  border-radius:999px;font-weight:600;
+  transition:all .25s cubic-bezier(.25,.8,.25,1);
+}
+.button.is-lilac:hover{
+  background:var(--accent-grad);color:#fff;border-color:transparent;
+  transform:translateY(-3px);
+  box-shadow:0 12px 26px rgba(139,107,217,.35);
+}
+.button.is-lilac .icon{margin-right:.1rem}
+
+/* Section titles */
+.section-title{
+  margin-bottom:.4rem;text-align:center;position:relative;
+  display:inline-block;padding-bottom:12px;font-weight:800;
+}
+.section-title::after{
+  content:'';position:absolute;width:54px;height:4px;border-radius:4px;
+  background:var(--accent-grad);bottom:0;left:50%;transform:translateX(-50%);
+}
+.eyebrow{
+  text-transform:uppercase;letter-spacing:.18em;font-size:.78rem;font-weight:700;
+  color:var(--lilac-500);text-align:center;display:block;margin-bottom:.4rem;
+}
+.center{text-align:center}
+
+/* Cards */
+.card-soft{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:20px;padding:26px;
+  box-shadow:0 14px 40px rgba(85,58,153,.06);
+  height:100%;
+}
+.tldr-box{
+  background:linear-gradient(180deg,#fbf9ff, #f5f0ff);
+  border:1px solid var(--lilac-200);
+  border-left:5px solid var(--lilac-500);
+  padding:1.8rem 2rem;border-radius:18px;margin:0 auto 1rem;
+  box-shadow:0 12px 36px rgba(111,79,192,.08);
+}
+
+/* Stat pills */
+.stat-row{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;margin-top:1.5rem}
+.stat{
+  flex:1 1 200px;max-width:240px;background:var(--paper);
+  border:1px solid var(--line);border-radius:18px;padding:20px 18px;text-align:center;
+  box-shadow:0 10px 30px rgba(85,58,153,.06);
+}
+.stat .big{font-family:'Fraunces',serif;font-weight:700;font-size:2.1rem;color:var(--lilac-600);line-height:1}
+.stat .lbl{color:var(--ink-soft);font-size:.86rem;margin-top:6px}
+
+/* Slider */
+.slider-container{
+  width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:16px;
+  position:relative;background:#0e0a1a;cursor:zoom-in;
+  border:1px solid var(--line);
+}
+.zoom-target{width:100%;height:100%;transform-origin:center center;
+  transition:transform .2s ease-out;will-change:transform,transform-origin}
+img-comparison-slider{
+  --divider-width:2px;--divider-color:#ad8eef;--default-handle-opacity:1;
+  width:100%;height:100%;outline:none;
+}
+img-comparison-slider img{width:100%;height:100%;object-fit:cover;object-position:center;display:block}
+.slider-shadow{box-shadow:0 18px 44px rgba(85,58,153,.18);border-radius:16px}
+img-comparison-slider figcaption{
+  background:rgba(43,37,64,.82);color:#fff;padding:5px 11px;border-radius:6px;
+  position:absolute;top:16px;font-size:.78rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:.06em;pointer-events:none;backdrop-filter:blur(2px);line-height:1;
+}
+.before figcaption{left:16px}
+.after figcaption{right:16px;color:#e7dcff}
+.hint{color:var(--ink-soft);font-size:.86rem;text-align:center;margin-top:14px}
+
+/* Chat / reasoning block (JarvisIR-style) */
+.chat{max-width:880px;margin:0 auto}
+.bubble{
+  display:flex;gap:14px;margin-bottom:18px;align-items:flex-start;
+}
+.avatar{
+  flex:0 0 auto;width:42px;height:42px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:#fff;
+  box-shadow:0 6px 16px rgba(111,79,192,.25);
+}
+.avatar.user{background:linear-gradient(135deg,#cbb8f6,#ad8eef)}
+.avatar.agent{background:var(--accent-grad);overflow:hidden}
+.avatar.agent img{width:100%;height:100%;object-fit:cover}
+.msg{
+  background:var(--paper);border:1px solid var(--line);border-radius:16px;
+  padding:16px 18px;box-shadow:0 8px 24px rgba(85,58,153,.05);flex:1;
+}
+.msg.user-msg{background:var(--lilac-50);border-color:var(--lilac-200)}
+.msg .who{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--lilac-500);margin-bottom:6px}
+
+.axis-tag{
+  display:inline-block;font-size:.66rem;font-weight:800;letter-spacing:.08em;
+  padding:2px 9px;border-radius:6px;margin-bottom:8px;text-transform:uppercase;
+}
+.axis-dp{background:#efeafe;color:#6f4fc0}
+.axis-or{background:#e6f7f3;color:#2f9e8c}
+.axis-tool{background:#fbeede;color:#c08a3a}
+
+/* Step timeline */
+.steps{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;align-items:stretch;margin-top:8px}
+.step{
+  flex:1 1 200px;max-width:230px;background:var(--paper);border:1px solid var(--line);
+  border-radius:16px;overflow:hidden;box-shadow:0 10px 28px rgba(85,58,153,.07);
+  display:flex;flex-direction:column;
+}
+.step img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
+.step .meta{padding:12px 14px}
+.step .iqa{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--lilac-600);font-weight:600}
+.step .act{font-weight:700;font-size:.95rem;margin-top:3px}
+.step .toolcall{
+  font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--ink-soft);
+  background:var(--lilac-50);border-radius:8px;padding:5px 8px;margin-top:8px;word-break:break-all;
+}
+.step.is-input{border-color:var(--lilac-300);border-width:2px}
+.step.is-final{border-color:var(--lilac-400);border-width:2px;box-shadow:0 14px 32px rgba(139,107,217,.18)}
+.arrow{display:flex;align-items:center;color:var(--lilac-300);font-size:1.4rem}
+@media(max-width:768px){.arrow{transform:rotate(90deg)}}
+
+/* Method modules */
+.method-title{color:var(--lilac-700);margin-bottom:8px;font-weight:700;
+  border-bottom:1px solid var(--line);padding-bottom:8px}
+.pill{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.05em;
+  padding:2px 10px;border-radius:999px;background:var(--lilac-100);color:var(--lilac-600);margin-left:6px}
+
+/* Comparison grid */
+.cmp-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.cmp-grid .cell{text-align:center}
+.cmp-grid img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;border:1px solid var(--line)}
+.cmp-grid .lab{font-size:.78rem;color:var(--ink-soft);margin-top:6px;font-weight:600}
+.cmp-grid .ours .lab{color:var(--lilac-600);font-weight:800}
+.cmp-grid .ours img{border-color:var(--lilac-400);border-width:2px}
+@media(max-width:768px){.cmp-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* Table */
+.tbl-wrap{overflow-x:auto;border-radius:16px;border:1px solid var(--line);box-shadow:0 12px 32px rgba(85,58,153,.06)}
+table.results{width:100%;border-collapse:collapse;font-size:.9rem;background:var(--paper);min-width:640px}
+table.results th,table.results td{padding:11px 14px;text-align:center;border-bottom:1px solid var(--line)}
+table.results thead th{background:var(--lilac-50);color:var(--lilac-700);font-weight:700;position:sticky;top:0}
+table.results td:first-child,table.results th:first-child{text-align:left;font-weight:600}
+table.results tr.group td{background:var(--paper-2);color:var(--ink-soft);font-weight:700;text-align:left;letter-spacing:.04em;font-size:.78rem;text-transform:uppercase}
+table.results tr.ours{background:linear-gradient(90deg,#f7f2ff,#fbf9ff)}
+table.results tr.ours td:first-child{color:var(--lilac-700);font-weight:800}
+.best{color:var(--lilac-700);font-weight:800}
+
+/* BibTeX */
+pre.bib{
+  background:var(--ink);color:#e7dcff;border-radius:16px;padding:22px;
+  font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.6;overflow-x:auto;
+}
+pre.bib .k{color:#cbb8f6}
+
+footer.footer{background:var(--paper-2);border-top:1px solid var(--line);padding:3rem 1.5rem}
+.divider-soft{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin:0 auto;max-width:1040px}
+section.section{padding-top:3.2rem;padding-bottom:3.2rem}
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<section class="hero hero-wrap">
+  <div class="blob-bg"></div>
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered"><div class="column has-text-centered">
+
+        <img src="./images/ditto_mascot.png" class="project-mascot" alt="DiTTo mascot">
+
+        <h1 class="title is-1" style="margin-top:6px;line-height:1">
+          <span class="gradient-text display-serif" style="font-size:4.6rem">DiTTo</span>
+        </h1>
+
+        <div><span class="venue-badge">NeurIPS 2026 &nbsp;·&nbsp; Under Review</span></div>
+
+        <h2 class="title is-3" style="margin-top:22px;font-weight:700;line-height:1.25">
+          Scalable <span style="color:var(--lilac-600)">Order-aware</span> All-in-One<br>
+          Image Restoration Agent
+        </h2>
+
+        <p class="subtitle is-5" style="max-width:760px;margin:14px auto 0">
+          A vision-language agent that schedules restoration experts in the right order,
+          trained from a learned simulator at <strong>O(N)</strong> cost instead of <strong>O(N²)</strong>.
+        </p>
+
+        <div class="publication-authors" style="margin-top:24px">
+          <span class="author-block"><a href="mailto:choiseungho1019@gmail.com">Seungho Choi</a>,</span>
+          <span class="author-block"><a href="https://cmlab-korea.github.io/" target="_blank">Jihyong Oh</a><sup>&dagger;</sup></span>
+        </div>
+        <div class="affil" style="margin-top:10px">
+          <img src="./images/cau_logo.png" alt="CAU" style="height:34px;vertical-align:middle;margin-right:8px">
+          Chung-Ang University
+        </div>
+        <div class="affil" style="margin-top:6px;font-weight:600;color:var(--ink)">
+          <img src="./images/cmlab_logo.png" alt="CMLab" style="height:34px;vertical-align:middle;margin-right:8px">
+          Creative Vision and Multimedia Lab (CMLab)
+        </div>
+        <p class="review-note"><sup>&dagger;</sup>Corresponding Author</p>
+
+        <div class="publication-links" style="margin-top:26px">
+          <span class="link-block">
+            <a href="#" class="button is-medium is-lilac">
+              <span class="icon"><i class="ai ai-arxiv"></i></span><span>arXiv</span>
+            </a>
+          </span>
+          <span class="link-block">
+            <a href="#" class="button is-medium is-lilac">
+              <span class="icon"><i class="far fa-file-pdf"></i></span><span>Paper</span>
+            </a>
+          </span>
+          <span class="link-block">
+            <a href="#" class="button is-medium is-lilac">
+              <span class="icon"><i class="fab fa-github"></i></span><span>Code</span>
+            </a>
+          </span>
+        </div>
+
+        <div class="stat-row">
+          <div class="stat"><div class="big">O(N)</div><div class="lbl">ORTD generation cost<br>(vs. O(N²) for prior agents)</div></div>
+          <div class="stat"><div class="big">~15×</div><div class="lbl">faster end-to-end adaptation<br>to a new expert</div></div>
+          <div class="stat"><div class="big">SOTA</div><div class="lbl">multi-degradation quality<br>on MiO-100</div></div>
+        </div>
+
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider-soft"></div>
+
+<!-- ===== TL;DR ===== -->
+<section class="section" style="padding-top:2.6rem">
+  <div class="container is-max-desktop">
+    <div class="tldr-box" style="max-width:880px">
+      <h3 class="title is-4" style="color:var(--lilac-600);margin-bottom:.5rem">TL;DR</h3>
+      <p class="is-size-5">
+        Real images suffer multiple degradations at once, and <strong>the order they are removed
+        changes the final quality</strong>. DiTTo casts restoration as sequential expert scheduling by a VLM.
+        Its <strong>Simulator</strong> (∪S-IR + AiO-IQA) builds the optimal-trajectory dataset with only
+        <strong>O(N) simulator steps</strong>, and its <strong>Agent</strong> learns to plan via SFT plus
+        <strong>Order-aware Restoration Alignment (ORA)</strong>, enabling plug-and-play extension to new
+        experts by updating only the lightweight ORA stage.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== RESTORATION CAPABILITY (sliders) ===== -->
+<section class="section" style="padding-top:1rem">
+  <div class="container is-max-desktop">
+    <span class="eyebrow">Restoration Capability</span>
+    <div class="center" style="margin-bottom:2rem"><h2 class="title is-3 section-title">Drag to compare · scroll to zoom</h2></div>
+
+    <div class="columns is-centered is-variable is-5">
+      <div class="column is-6">
+        <div class="card-soft">
+          <h3 class="title is-5" style="margin-bottom:14px">Fog + Low-light + Noise</h3>
+          <div class="slider-container"><div class="zoom-target">
+            <img-comparison-slider class="slider-shadow">
+              <figure slot="first" class="before"><img src="./images/street_input.png" alt="degraded input"><figcaption>Input</figcaption></figure>
+              <figure slot="second" class="after"><img src="./images/street_ditto.png" alt="DiTTo restored"><figcaption>DiTTo</figcaption></figure>
+            </img-comparison-slider>
+          </div></div>
+          <p class="is-size-6" style="margin-top:14px;color:var(--ink-soft)">
+            Recovers structure and contrast lost under compounded haze and darkness without amplifying residual noise.
+          </p>
+        </div>
+      </div>
+      <div class="column is-6">
+        <div class="card-soft">
+          <h3 class="title is-5" style="margin-bottom:14px">Snow + Blur</h3>
+          <div class="slider-container"><div class="zoom-target">
+            <img-comparison-slider class="slider-shadow">
+              <figure slot="first" class="before"><img src="./images/snowfield_input.png" alt="degraded input"><figcaption>Input</figcaption></figure>
+              <figure slot="second" class="after"><img src="./images/snowfield_ditto.png" alt="DiTTo restored"><figcaption>DiTTo</figcaption></figure>
+            </img-comparison-slider>
+          </div></div>
+          <p class="is-size-6" style="margin-top:14px;color:var(--ink-soft)">
+            Clears snow occlusion first, then deblurs, preserving fine edges that a wrong order would smear away.
+          </p>
+        </div>
+      </div>
+    </div>
+    <p class="hint"><i class="fas fa-search-plus"></i> Scroll wheel to zoom · <i class="fas fa-arrows-alt-h"></i> drag the divider to compare</p>
+  </div>
+</section>
+
+<div class="divider-soft"></div>
+
+<!-- ===== REASONING + INTERMEDIATE STEPS (the JarvisIR-style centerpiece) ===== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <span class="eyebrow">How the agent thinks</span>
+    <div class="center" style="margin-bottom:1.4rem"><h2 class="title is-3 section-title">Reasoning &amp; Step-by-Step Restoration</h2></div>
+    <p class="subtitle is-6 center" style="max-width:760px;margin:0 auto 2.4rem">
+      DiTTo perceives the degradations, plans an order, and emits structured tool calls.
+      Each call invokes one expert and returns an intermediate state, and the IQA score climbs at every step.
+    </p>
+
+    <!-- Chat: instruction -> agent reasoning decomposed into DP / OR / Tool -->
+    <div class="chat">
+      <div class="bubble">
+        <div class="avatar user"><i class="fas fa-user"></i></div>
+        <div class="msg user-msg">
+          <div class="who">User</div>
+          Can you clean up this image? Assess what's wrong, then plan the restoration order and the expert to use at each step.
+        </div>
+      </div>
+
+      <div class="bubble">
+        <div class="avatar agent"><img src="./images/icon.png" alt="DiTTo"></div>
+        <div class="msg">
+          <div class="who">DiTTo Agent</div>
+
+          <span class="axis-tag axis-dp">DP · Degradation Perception</span>
+          <p>I can identify the following degradations present in the image:
+            <strong>sensor noise</strong>, <strong>low-light degradation</strong>, and <strong>fog</strong>.</p>
+
+          <span class="axis-tag axis-or" style="margin-top:6px">OR · Order-aware Restoration</span>
+          <p>Planning the order by reasoning over frequency-domain interactions:
+            remove <strong>sensor noise</strong> first (enhancing low-light before denoising would amplify it),
+            then correct <strong>low-light</strong>, and finally lift the global <strong>fog</strong>.</p>
+
+          <span class="axis-tag axis-tool" style="margin-top:6px">Tool · Structured Call</span>
+          <div class="toolcall" style="margin-top:0">
+            [ {"action":"sensor_noise","model":"scunet"},<br>
+            &nbsp;&nbsp;{"action":"low_light","model":"retinexformer"},<br>
+            &nbsp;&nbsp;{"action":"fog","model":"ridcp"} ]
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Intermediate states timeline -->
+    <div style="margin-top:2.6rem">
+      <div class="steps">
+        <div class="step is-input">
+          <img src="./images/seq_input.png" alt="input state">
+          <div class="meta">
+            <div class="iqa">IQA 0.412</div>
+            <div class="act">Observed input</div>
+            <div style="font-size:.78rem;color:var(--ink-soft);margin-top:4px">noise · low-light · fog</div>
+          </div>
+        </div>
+        <div class="arrow"><i class="fas fa-arrow-right"></i></div>
+        <div class="step">
+          <img src="./images/seq_step1.png" alt="step 1">
+          <div class="meta">
+            <div class="iqa">IQA 0.498</div>
+            <div class="act">① De-noise</div>
+            <div class="toolcall">{"action":"sensor_noise","model":"scunet"}</div>
+          </div>
+        </div>
+        <div class="arrow"><i class="fas fa-arrow-right"></i></div>
+        <div class="step">
+          <img src="./images/seq_step2.png" alt="step 2">
+          <div class="meta">
+            <div class="iqa">IQA 0.571</div>
+            <div class="act">② Enhance low-light</div>
+            <div class="toolcall">{"action":"low_light","model":"retinexformer"}</div>
+          </div>
+        </div>
+        <div class="arrow"><i class="fas fa-arrow-right"></i></div>
+        <div class="step is-final">
+          <img src="./images/seq_step3.png" alt="final">
+          <div class="meta">
+            <div class="iqa">IQA 0.643</div>
+            <div class="act">③ De-fog → Output</div>
+            <div class="toolcall">{"action":"fog","model":"ridcp"}</div>
+          </div>
+        </div>
+      </div>
+      <p class="hint" style="margin-top:18px">
+        Applying the actions in a sub-optimal order yields measurably lower IQA at intermediate states,
+        and early errors propagate to the final output, which is exactly what order-aware planning avoids.
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="divider-soft"></div>
+
+<!-- ===== WHY ORDER MATTERS ===== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <span class="eyebrow">Motivation</span>
+    <div class="center" style="margin-bottom:2rem"><h2 class="title is-3 section-title">Why Order &amp; Why an Agent</h2></div>
+    <div class="columns is-centered">
+      <div class="column is-4">
+        <div class="card-soft">
+          <h5 class="title is-5 method-title">Order changes quality</h5>
+          <p>De-fogging before de-raining can alter the apparent rain distribution; enhancing low-light before
+          de-noising amplifies noise. The same degradation set can land at very different IQA depending on removal order.</p>
+        </div>
+      </div>
+      <div class="column is-4">
+        <div class="card-soft">
+          <h5 class="title is-5 method-title">Combinatorial planning</h5>
+          <p>With many degradations and many experts per type, the valid orderings explode. A VLM that reasons
+          and emits structured tool calls is a natural fit for sequential expert scheduling.</p>
+        </div>
+      </div>
+      <div class="column is-4">
+        <div class="card-soft">
+          <h5 class="title is-5 method-title">The cost bottleneck</h5>
+          <p>Prior training-based agents need <strong>O(N²)</strong> real expert calls to build supervision, and
+          re-generate everything when a new expert is added. DiTTo removes this coupling.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider-soft"></div>
+
+<!-- ===== METHOD ===== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <span class="eyebrow">Framework</span>
+    <div class="center" style="margin-bottom:2rem"><h2 class="title is-3 section-title">Simulator + Agent</h2></div>
+
+    <div class="columns is-multiline">
+      <div class="column is-6">
+        <div class="card-soft">
+          <h5 class="title is-5 method-title">∪S-IR <span class="pill">Simulator</span></h5>
+          <p>A single-degradation restoration simulator that cheaply approximates heterogeneous experts via
+          action-conditioned clean/degraded feature mixing with adaptive frequency-band gating that removes the
+          target degradation while preserving the rest.</p>
+        </div>
+      </div>
+      <div class="column is-6">
+        <div class="card-soft">
+          <h5 class="title is-5 method-title">AiO-IQA <span class="pill">Simulator</span></h5>
+          <p>An all-in-one scoring model that predicts per-action next-state quality directly from the current
+          state and trajectory, picking the highest-scoring action so the whole ORTD trajectory unrolls in
+          <strong>O(N)</strong> steps.</p>
+        </div>
+      </div>
+      <div class="column is-6">
+        <div class="card-soft">
+          <h5 class="title is-5 method-title">Stage 1 · SFT <span class="pill">Agent</span></h5>
+          <p>The VLM is fine-tuned on simulator-generated ORTD as multi-turn tool-use conversations, acquiring
+          degradation perception, order-aware planning, and JSON tool-call formatting.</p>
+        </div>
+      </div>
+      <div class="column is-6">
+        <div class="card-soft">
+          <h5 class="title is-5 method-title">Stage 2 · ORA <span class="pill">Agent</span></h5>
+          <p>A DPO-style alignment that computes preference margins over <strong>decomposed planning axes</strong>
+          (DP / OR / Tool) on a small expert-executed subset, closing the simulator-to-expert gap without diluting
+          the signal across shared template tokens.</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="hint" style="margin-top:18px">
+      Adding a new expert reuses ∪S-IR, AiO-IQA and the SFT checkpoint, updating <strong>only</strong> the efficient ORA stage.
+    </p>
+  </div>
+</section>
+
+<div class="divider-soft"></div>
+
+<!-- ===== QUALITATIVE GRID ===== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <span class="eyebrow">Qualitative Comparison</span>
+    <div class="center" style="margin-bottom:2rem"><h2 class="title is-3 section-title">Against Prior Agents</h2></div>
+
+    <div class="card-soft">
+      <div class="cmp-grid">
+        <div class="cell"><img src="./images/street_input.png" alt="input"><div class="lab">Input</div></div>
+        <div class="cell"><img src="./images/street_input.png" alt="4kagent"><div class="lab">4KAgent</div></div>
+        <div class="cell"><img src="./images/snowfield_ditto.png" alt="jarvisir"><div class="lab">JarvisIR</div></div>
+        <div class="cell ours"><img src="./images/street_ditto.png" alt="ditto"><div class="lab">DiTTo</div></div>
+        <div class="cell ours"><img src="./images/street_ditto.png" alt="star ditto"><div class="lab">★DiTTo</div></div>
+      </div>
+      <div class="cmp-grid" style="margin-top:12px">
+        <div class="cell"><img src="./images/rainy_input.png" alt="input"><div class="lab">Input</div></div>
+        <div class="cell"><img src="./images/rainy_input.png" alt="4kagent"><div class="lab">4KAgent</div></div>
+        <div class="cell"><img src="./images/snowfield_ditto.png" alt="jarvisir"><div class="lab">JarvisIR</div></div>
+        <div class="cell ours"><img src="./images/rainy_ditto.png" alt="ditto"><div class="lab">DiTTo</div></div>
+        <div class="cell ours"><img src="./images/rainy_ditto.png" alt="star ditto"><div class="lab">★DiTTo</div></div>
+      </div>
+      <p class="is-size-6" style="margin-top:16px;color:var(--ink-soft)">
+        DiTTo removes mixed degradations more thoroughly while preserving natural textures and semantic detail.
+        <strong>★DiTTo</strong> uses an extended expert pool to show plug-and-play scalability.
+        <em>(placeholder images. Swap in <code class="mono">images/*.png</code> with your real result crops.)</em>
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="divider-soft"></div>
+
+<!-- ===== QUANTITATIVE TABLE ===== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <span class="eyebrow">Quantitative Results</span>
+    <div class="center" style="margin-bottom:1rem"><h2 class="title is-3 section-title">MiO-100 · No-reference IQA</h2></div>
+    <p class="subtitle is-6 center" style="max-width:720px;margin:0 auto 2rem">
+      Reported on the final restored state. DiTTo uses the same expert pool as JarvisIR; ★DiTTo uses the extended pool.
+    </p>
+
+    <div class="tbl-wrap">
+      <table class="results">
+        <thead>
+          <tr>
+            <th>Method</th><th>MUSIQ ↑</th><th>MANIQA ↑</th><th>CLIP-IQA+ ↑</th><th>NIQE ↓</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="group"><td colspan="5">All-in-One methods · 3 degradations</td></tr>
+          <tr><td>MiOIR</td><td>52.41</td><td>0.2815</td><td>0.4040</td><td>6.075</td></tr>
+          <tr><td>AutoDIR</td><td>52.29</td><td>0.3184</td><td>0.3985</td><td>8.537</td></tr>
+          <tr class="group"><td colspan="5">Agent-based methods · 3 degradations</td></tr>
+          <tr><td>AgenticIR</td><td>61.20</td><td>0.4585</td><td>0.6010</td><td>6.587</td></tr>
+          <tr><td>4KAgent</td><td>65.40</td><td>0.5025</td><td>0.6555</td><td>6.121</td></tr>
+          <tr><td>JarvisIR</td><td>67.54</td><td>0.5331</td><td>0.6845</td><td><span class="best">5.862</span></td></tr>
+          <tr class="ours"><td>DiTTo</td><td>67.09</td><td>0.5823</td><td>0.7126</td><td>5.962</td></tr>
+          <tr class="ours"><td>★DiTTo</td><td><span class="best">70.65</span></td><td><span class="best">0.6855</span></td><td><span class="best">0.8101</span></td><td>5.773</td></tr>
+          <tr class="group"><td colspan="5">Agent-based methods · 5 degradations</td></tr>
+          <tr><td>4KAgent</td><td>69.10</td><td>0.5818</td><td>0.7355</td><td>5.547</td></tr>
+          <tr><td>JarvisIR</td><td>71.36</td><td>0.6191</td><td>0.7677</td><td>5.292</td></tr>
+          <tr class="ours"><td>DiTTo</td><td>69.34</td><td>0.6270</td><td>0.7690</td><td>5.224</td></tr>
+          <tr class="ours"><td>★DiTTo</td><td><span class="best">72.27</span></td><td><span class="best">0.7241</span></td><td><span class="best">0.8509</span></td><td><span class="best">5.188</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- adaptation cost -->
+    <div class="center" style="margin:3rem 0 1rem"><h3 class="title is-4">Per-stage adaptation cost <span style="color:var(--ink-soft);font-weight:500;font-size:1rem">(hours, 2×B200)</span></h3></div>
+    <div class="tbl-wrap" style="max-width:680px;margin:0 auto">
+      <table class="results">
+        <thead><tr><th>Stage</th><th>JarvisIR</th><th>DiTTo</th><th>Speedup</th></tr></thead>
+        <tbody>
+          <tr><td>Data generation</td><td>~460</td><td>~10</td><td><span class="best">~45×</span></td></tr>
+          <tr><td>SFT</td><td>~37</td><td>~37</td><td>1×</td></tr>
+          <tr><td>Alignment</td><td>~410</td><td>~11</td><td><span class="best">~37×</span></td></tr>
+          <tr class="ours"><td>End-to-end</td><td>~870</td><td>~60</td><td><span class="best">~15×</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="divider-soft"></div>
+
+<!-- ===== BIBTEX ===== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <span class="eyebrow">Cite</span>
+    <div class="center" style="margin-bottom:1.6rem"><h2 class="title is-3 section-title">BibTeX</h2></div>
+    <pre class="bib"><span class="k">@inproceedings</span>{ditto2026,
+  title     = {DiTTo: Scalable Order-aware All-in-One Image Restoration Agent},
+  author    = {Choi, Seungho and Oh, Jihyong},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  note      = {Under review},
+  year      = {2026}
+}</pre>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container is-max-desktop">
+    <div class="content has-text-centered">
+      <img src="./images/icon.png" alt="DiTTo" style="width:78px;opacity:.9;margin-bottom:10px">
+      <p class="is-size-7" style="color:var(--ink-soft)">
+        Project page for <strong>DiTTo</strong>. Template structure adapted from
+        <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>; layout &amp; theme are original.<br>
+        Licensed under
+        <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+  document.querySelectorAll('.slider-container').forEach(container=>{
+    const target = container.querySelector('.zoom-target');
+    let scale = 1;
+    const MIN=1, MAX=5, SPEED=0.5;
+    container.addEventListener('wheel', e=>{
+      e.preventDefault();
+      const dir = e.deltaY>0 ? -1 : 1;
+      scale = Math.min(Math.max(scale + dir*SPEED, MIN), MAX);
+      target.style.transform = `scale(${scale})`;
+      container.style.cursor = scale>1 ? 'move' : 'zoom-in';
+    }, {passive:false});
+    container.addEventListener('mousemove', e=>{
+      const r = container.getBoundingClientRect();
+      const x = ((e.clientX-r.left)/r.width)*100;
+      const y = ((e.clientY-r.top)/r.height)*100;
+      target.style.transformOrigin = `${x}% ${y}%`;
+    });
+    container.addEventListener('mouseleave', ()=>{
+      scale=1; target.style.transform='scale(1)';
+      container.style.cursor='zoom-in';
+      setTimeout(()=>{ target.style.transformOrigin='center center'; },200);
+    });
+  });
+});
+</script>
+</body>
+</html>
