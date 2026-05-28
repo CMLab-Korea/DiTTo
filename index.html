@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="description" content="DiTTo: Scalable Order-aware All-in-One Image Restoration Agent">
-<meta name="keywords" content="DiTTo, Image Restoration, Agent, VLM, All-in-One, Order-aware">
+<meta name="keywords" content="DiTTo, Image Restoration, Agent, VLM, All-in-One, Order-aware, NeurIPS">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DiTTo: Scalable Order-aware All-in-One Image Restoration Agent</title>
 <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
@@ -231,10 +231,14 @@ img-comparison-slider figcaption{
 /* Comparison grid */
 .cmp-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
 .cmp-grid .cell{text-align:center}
-.cmp-grid img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;border:1px solid var(--line)}
+.cmp-grid .cell img{
+  display:block;width:100%;aspect-ratio:1/1;object-fit:cover;
+  border-radius:12px;border:2px solid var(--line);
+  box-sizing:border-box;background:var(--lilac-50);
+}
 .cmp-grid .lab{font-size:.78rem;color:var(--ink-soft);margin-top:6px;font-weight:600}
 .cmp-grid .ours .lab{color:var(--lilac-600);font-weight:800}
-.cmp-grid .ours img{border-color:var(--lilac-400);border-width:2px}
+.cmp-grid .ours img{border-color:var(--lilac-400)}
 @media(max-width:768px){.cmp-grid{grid-template-columns:repeat(2,1fr)}}
 
 /* Table */
@@ -275,7 +279,7 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
           <span class="gradient-text display-serif" style="font-size:4.6rem">DiTTo</span>
         </h1>
 
-        <div><span class="venue-badge">Under Review</span></div>
+        <div><span class="venue-badge">NeurIPS 2026 &nbsp;·&nbsp; Under Review</span></div>
 
         <h2 class="title is-3" style="margin-top:22px;font-weight:700;line-height:1.25">
           Scalable <span style="color:var(--lilac-600)">Order-aware</span> All-in-One<br>
@@ -569,23 +573,22 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
 
     <div class="card-soft">
       <div class="cmp-grid">
-        <div class="cell"><img width="512" height="512" src="./images/input1.png" alt="input"><div class="lab">Input</div></div>
-        <div class="cell"><img width="512" height="512" src="./images/4k_1.png" alt="4kagent"><div class="lab">4KAgent</div></div>
-        <div class="cell"><img width="512" height="512" src="./images/jarvis_1.png" alt="jarvisir"><div class="lab">JarvisIR</div></div>
-        <div class="cell ours"><img width="512" height="512" src="./images/ditto_1.png" alt="ditto"><div class="lab">DiTTo</div></div>
-        <div class="cell ours"><img width="512" height="512" src="./images/s_ditto_1.png" alt="star ditto"><div class="lab">★DiTTo</div></div>
+        <div class="cell"><img width="512" height="512" src="./images/street_input.png" alt="input"><div class="lab">Input</div></div>
+        <div class="cell"><img width="512" height="512" src="./images/street_input.png" alt="4kagent"><div class="lab">4KAgent</div></div>
+        <div class="cell"><img width="512" height="512" src="./images/snowfield_ditto.png" alt="jarvisir"><div class="lab">JarvisIR</div></div>
+        <div class="cell ours"><img width="512" height="512" src="./images/street_ditto.png" alt="ditto"><div class="lab">DiTTo</div></div>
+        <div class="cell ours"><img width="512" height="512" src="./images/street_ditto.png" alt="star ditto"><div class="lab">★DiTTo</div></div>
       </div>
       <div class="cmp-grid" style="margin-top:12px">
-        <div class="cell"><img width="512" height="512" src="./images/input2.png" alt="input"><div class="lab">Input</div></div>
-        <div class="cell"><img width="512" height="512" src="./images/4k_2.png" alt="4kagent"><div class="lab">4KAgent</div></div>
-        <div class="cell"><img width="512" height="512" src="./images/jarvis_2.png" alt="jarvisir"><div class="lab">JarvisIR</div></div>
-        <div class="cell ours"><img width="512" height="512" src="./images/ditto_2.png" alt="ditto"><div class="lab">DiTTo</div></div>
-        <div class="cell ours"><img width="512" height="512" src="./images/s_ditto_2.png" alt="star ditto"><div class="lab">★DiTTo</div></div>
+        <div class="cell"><img width="512" height="512" src="./images/rainy_input.png" alt="input"><div class="lab">Input</div></div>
+        <div class="cell"><img width="512" height="512" src="./images/rainy_input.png" alt="4kagent"><div class="lab">4KAgent</div></div>
+        <div class="cell"><img width="512" height="512" src="./images/snowfield_ditto.png" alt="jarvisir"><div class="lab">JarvisIR</div></div>
+        <div class="cell ours"><img width="512" height="512" src="./images/rainy_ditto.png" alt="ditto"><div class="lab">DiTTo</div></div>
+        <div class="cell ours"><img width="512" height="512" src="./images/rainy_ditto.png" alt="star ditto"><div class="lab">★DiTTo</div></div>
       </div>
       <p class="is-size-6" style="margin-top:16px;color:var(--ink-soft)">
         DiTTo removes mixed degradations more thoroughly while preserving natural textures and semantic detail.
         <strong>★DiTTo</strong> uses an extended expert pool to show plug-and-play scalability.
-        <em>(placeholder images. Swap in <code class="mono">images/*.png</code> with your real result crops.)</em>
       </p>
     </div>
   </div>
@@ -616,9 +619,9 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
           <tr class="group"><td colspan="5">Agent-based methods · 3 degradations</td></tr>
           <tr><td>AgenticIR</td><td>61.20</td><td>0.4585</td><td>0.6010</td><td>6.587</td></tr>
           <tr><td>4KAgent</td><td>65.40</td><td>0.5025</td><td>0.6555</td><td>6.121</td></tr>
-          <tr><td>JarvisIR</td><td>67.54</td><td>0.5331</td><td>0.6845</td><td><span class="best">5.862</span></td></tr>
+          <tr><td>JarvisIR</td><td>67.54</td><td>0.5331</td><td>0.6845</td><td>5.862</td></tr>
           <tr class="ours"><td>DiTTo</td><td>67.09</td><td>0.5823</td><td>0.7126</td><td>5.962</td></tr>
-          <tr class="ours"><td>★DiTTo</td><td><span class="best">70.65</span></td><td><span class="best">0.6855</span></td><td><span class="best">0.8101</span></td><td>5.773</td></tr>
+          <tr class="ours"><td>★DiTTo</td><td><span class="best">70.65</span></td><td><span class="best">0.6855</span></td><td><span class="best">0.8101</span></td><td><span class="best">5.773</span></td></tr>
           <tr class="group"><td colspan="5">Agent-based methods · 5 degradations</td></tr>
           <tr><td>4KAgent</td><td>69.10</td><td>0.5818</td><td>0.7355</td><td>5.547</td></tr>
           <tr><td>JarvisIR</td><td>71.36</td><td>0.6191</td><td>0.7677</td><td>5.292</td></tr>
@@ -654,6 +657,7 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
     <pre class="bib"><span class="k">@inproceedings</span>{ditto2026,
   title     = {DiTTo: Scalable Order-aware All-in-One Image Restoration Agent},
   author    = {Choi, Seungho and Oh, Jihyong},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
   note      = {Under review},
   year      = {2026}
 }</pre>
