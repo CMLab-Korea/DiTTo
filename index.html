@@ -398,7 +398,7 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
     <div class="center" style="margin-bottom:1.4rem"><h2 class="title is-3 section-title">Reasoning &amp; Step-by-Step Restoration</h2></div>
     <p class="subtitle is-6 center" style="max-width:760px;margin:0 auto 2.4rem">
       DiTTo perceives the degradations, plans an order, and emits structured tool calls.
-      Each call invokes one expert and returns an intermediate state, and the IQA score climbs at every step.
+      Each call invokes one expert and returns an intermediate state, and the image gets progressively cleaner at every step.
     </p>
 
     <!-- Chat: instruction -> agent reasoning decomposed into DP / OR / Tool -->
@@ -418,18 +418,18 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
 
           <span class="axis-tag axis-dp">DP · Degradation Perception</span>
           <p>I can identify the following degradations present in the image:
-            <strong>sensor noise</strong>, <strong>low-light degradation</strong>, and <strong>fog</strong>.</p>
+            <strong>sensor noise</strong>, <strong>defocus blur</strong>, and <strong>snow</strong>.</p>
 
           <span class="axis-tag axis-or" style="margin-top:6px">OR · Order-aware Restoration</span>
           <p>Planning the order by reasoning over frequency-domain interactions:
-            remove <strong>sensor noise</strong> first (enhancing low-light before denoising would amplify it),
-            then correct <strong>low-light</strong>, and finally lift the global <strong>fog</strong>.</p>
+            remove <strong>sensor noise</strong> first (deblurring beforehand would sharpen the noise into the structure),
+            then resolve <strong>defocus blur</strong>, and finally clear the <strong>snow</strong> occlusion.</p>
 
           <span class="axis-tag axis-tool" style="margin-top:6px">Tool · Structured Call</span>
           <div class="toolcall" style="margin-top:0">
             [ {"action":"sensor_noise","model":"scunet"},<br>
-            &nbsp;&nbsp;{"action":"low_light","model":"retinexformer"},<br>
-            &nbsp;&nbsp;{"action":"fog","model":"ridcp"} ]
+            &nbsp;&nbsp;{"action":"defocus_blur","model":"drbnet"},<br>
+            &nbsp;&nbsp;{"action":"snow","model":"snowmaster"} ]
           </div>
         </div>
       </div>
@@ -441,16 +441,14 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
         <div class="step is-input">
           <img width="512" height="512" src="./images/seq_input.png" alt="input state">
           <div class="meta">
-            <div class="iqa">IQA 0.412</div>
             <div class="act">Observed input</div>
-            <div style="font-size:.78rem;color:var(--ink-soft);margin-top:4px">noise · low-light · fog</div>
+            <div style="font-size:.78rem;color:var(--ink-soft);margin-top:4px">noise · defocus blur · snow</div>
           </div>
         </div>
         <div class="arrow"><i class="fas fa-arrow-right"></i></div>
         <div class="step">
           <img width="512" height="512" src="./images/seq_step1.png" alt="step 1">
           <div class="meta">
-            <div class="iqa">IQA 0.498</div>
             <div class="act">① De-noise</div>
             <div class="toolcall">{"action":"sensor_noise","model":"scunet"}</div>
           </div>
@@ -459,23 +457,21 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
         <div class="step">
           <img width="512" height="512" src="./images/seq_step2.png" alt="step 2">
           <div class="meta">
-            <div class="iqa">IQA 0.571</div>
-            <div class="act">② Enhance low-light</div>
-            <div class="toolcall">{"action":"low_light","model":"retinexformer"}</div>
+            <div class="act">② De-blur</div>
+            <div class="toolcall">{"action":"defocus_blur","model":"drbnet"}</div>
           </div>
         </div>
         <div class="arrow"><i class="fas fa-arrow-right"></i></div>
         <div class="step is-final">
           <img width="512" height="512" src="./images/seq_step3.png" alt="final">
           <div class="meta">
-            <div class="iqa">IQA 0.643</div>
-            <div class="act">③ De-fog → Output</div>
-            <div class="toolcall">{"action":"fog","model":"ridcp"}</div>
+            <div class="act">③ De-snow → Output</div>
+            <div class="toolcall">{"action":"snow","model":"snowmaster"}</div>
           </div>
         </div>
       </div>
       <p class="hint" style="margin-top:18px">
-        Applying the actions in a sub-optimal order yields measurably lower IQA at intermediate states,
+        Applying the actions in a sub-optimal order yields measurably lower quality at intermediate states,
         and early errors propagate to the final output, which is exactly what order-aware planning avoids.
       </p>
     </div>
