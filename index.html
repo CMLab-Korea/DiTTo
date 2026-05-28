@@ -153,7 +153,7 @@ mono,code,.mono{font-family:'JetBrains Mono',monospace}
 
 /* Slider */
 .slider-container{
-  width:100%;aspect-ratio:1/1;overflow:hidden;border-radius:16px;
+  width:100%;max-width:512px;margin:0 auto;aspect-ratio:1/1;overflow:hidden;border-radius:16px;
   position:relative;background:#0e0a1a;cursor:zoom-in;
   border:1px solid var(--line);
 }
@@ -361,8 +361,8 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
           <h3 class="title is-5" style="margin-bottom:14px">Fog + Low-light + Noise</h3>
           <div class="slider-container"><div class="zoom-target">
             <img-comparison-slider class="slider-shadow">
-              <figure slot="first" class="before"><img src="./images/street_input.png" alt="degraded input"><figcaption>Input</figcaption></figure>
-              <figure slot="second" class="after"><img src="./images/street_ditto.png" alt="DiTTo restored"><figcaption>DiTTo</figcaption></figure>
+              <figure slot="first" class="before"><img width="512" height="512" src="./images/street_input.png" alt="degraded input"><figcaption>Input</figcaption></figure>
+              <figure slot="second" class="after"><img width="512" height="512" src="./images/street_ditto.png" alt="DiTTo restored"><figcaption>DiTTo</figcaption></figure>
             </img-comparison-slider>
           </div></div>
           <p class="is-size-6" style="margin-top:14px;color:var(--ink-soft)">
@@ -375,8 +375,8 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
           <h3 class="title is-5" style="margin-bottom:14px">Snow + Blur</h3>
           <div class="slider-container"><div class="zoom-target">
             <img-comparison-slider class="slider-shadow">
-              <figure slot="first" class="before"><img src="./images/snowfield_input.png" alt="degraded input"><figcaption>Input</figcaption></figure>
-              <figure slot="second" class="after"><img src="./images/snowfield_ditto.png" alt="DiTTo restored"><figcaption>DiTTo</figcaption></figure>
+              <figure slot="first" class="before"><img width="512" height="512" src="./images/snowfield_input.png" alt="degraded input"><figcaption>Input</figcaption></figure>
+              <figure slot="second" class="after"><img width="512" height="512" src="./images/snowfield_ditto.png" alt="DiTTo restored"><figcaption>DiTTo</figcaption></figure>
             </img-comparison-slider>
           </div></div>
           <p class="is-size-6" style="margin-top:14px;color:var(--ink-soft)">
@@ -439,7 +439,7 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
     <div style="margin-top:2.6rem">
       <div class="steps">
         <div class="step is-input">
-          <img src="./images/seq_input.png" alt="input state">
+          <img width="512" height="512" src="./images/seq_input.png" alt="input state">
           <div class="meta">
             <div class="iqa">IQA 0.412</div>
             <div class="act">Observed input</div>
@@ -448,7 +448,7 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
         </div>
         <div class="arrow"><i class="fas fa-arrow-right"></i></div>
         <div class="step">
-          <img src="./images/seq_step1.png" alt="step 1">
+          <img width="512" height="512" src="./images/seq_step1.png" alt="step 1">
           <div class="meta">
             <div class="iqa">IQA 0.498</div>
             <div class="act">① De-noise</div>
@@ -457,7 +457,7 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
         </div>
         <div class="arrow"><i class="fas fa-arrow-right"></i></div>
         <div class="step">
-          <img src="./images/seq_step2.png" alt="step 2">
+          <img width="512" height="512" src="./images/seq_step2.png" alt="step 2">
           <div class="meta">
             <div class="iqa">IQA 0.571</div>
             <div class="act">② Enhance low-light</div>
@@ -466,7 +466,7 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
         </div>
         <div class="arrow"><i class="fas fa-arrow-right"></i></div>
         <div class="step is-final">
-          <img src="./images/seq_step3.png" alt="final">
+          <img width="512" height="512" src="./images/seq_step3.png" alt="final">
           <div class="meta">
             <div class="iqa">IQA 0.643</div>
             <div class="act">③ De-fog → Output</div>
@@ -573,18 +573,18 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
 
     <div class="card-soft">
       <div class="cmp-grid">
-        <div class="cell"><img src="./images/street_input.png" alt="input"><div class="lab">Input</div></div>
-        <div class="cell"><img src="./images/street_input.png" alt="4kagent"><div class="lab">4KAgent</div></div>
-        <div class="cell"><img src="./images/snowfield_ditto.png" alt="jarvisir"><div class="lab">JarvisIR</div></div>
-        <div class="cell ours"><img src="./images/street_ditto.png" alt="ditto"><div class="lab">DiTTo</div></div>
-        <div class="cell ours"><img src="./images/street_ditto.png" alt="star ditto"><div class="lab">★DiTTo</div></div>
+        <div class="cell"><img width="512" height="512" src="./images/street_input.png" alt="input"><div class="lab">Input</div></div>
+        <div class="cell"><img width="512" height="512" src="./images/street_input.png" alt="4kagent"><div class="lab">4KAgent</div></div>
+        <div class="cell"><img width="512" height="512" src="./images/snowfield_ditto.png" alt="jarvisir"><div class="lab">JarvisIR</div></div>
+        <div class="cell ours"><img width="512" height="512" src="./images/street_ditto.png" alt="ditto"><div class="lab">DiTTo</div></div>
+        <div class="cell ours"><img width="512" height="512" src="./images/street_ditto.png" alt="star ditto"><div class="lab">★DiTTo</div></div>
       </div>
       <div class="cmp-grid" style="margin-top:12px">
-        <div class="cell"><img src="./images/rainy_input.png" alt="input"><div class="lab">Input</div></div>
-        <div class="cell"><img src="./images/rainy_input.png" alt="4kagent"><div class="lab">4KAgent</div></div>
-        <div class="cell"><img src="./images/snowfield_ditto.png" alt="jarvisir"><div class="lab">JarvisIR</div></div>
-        <div class="cell ours"><img src="./images/rainy_ditto.png" alt="ditto"><div class="lab">DiTTo</div></div>
-        <div class="cell ours"><img src="./images/rainy_ditto.png" alt="star ditto"><div class="lab">★DiTTo</div></div>
+        <div class="cell"><img width="512" height="512" src="./images/rainy_input.png" alt="input"><div class="lab">Input</div></div>
+        <div class="cell"><img width="512" height="512" src="./images/rainy_input.png" alt="4kagent"><div class="lab">4KAgent</div></div>
+        <div class="cell"><img width="512" height="512" src="./images/snowfield_ditto.png" alt="jarvisir"><div class="lab">JarvisIR</div></div>
+        <div class="cell ours"><img width="512" height="512" src="./images/rainy_ditto.png" alt="ditto"><div class="lab">DiTTo</div></div>
+        <div class="cell ours"><img width="512" height="512" src="./images/rainy_ditto.png" alt="star ditto"><div class="lab">★DiTTo</div></div>
       </div>
       <p class="is-size-6" style="margin-top:16px;color:var(--ink-soft)">
         DiTTo removes mixed degradations more thoroughly while preserving natural textures and semantic detail.
