@@ -59,6 +59,9 @@ a{color:var(--lilac-600);transition:color .25s ease}
 a:hover{color:var(--lilac-700)}
 mono,code,.mono{font-family:'JetBrains Mono',monospace}
 
+/* Complexity notation — unified italic */
+.cx{font-style:italic;font-weight:700;color:var(--lilac-700)}
+
 .gradient-text{
   background:var(--accent-grad);
   -webkit-background-clip:text;background-clip:text;
@@ -85,12 +88,6 @@ mono,code,.mono{font-family:'JetBrains Mono',monospace}
 }
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 
-.venue-badge{
-  display:inline-block;padding:7px 18px;margin-top:6px;
-  font-size:.92rem;font-weight:700;letter-spacing:.06em;
-  border-radius:999px;color:#fff;background:var(--accent-grad);
-  box-shadow:0 8px 22px rgba(139,107,217,.35);
-}
 .review-note{color:var(--ink-soft);font-size:.85rem;margin-top:8px;letter-spacing:.02em}
 
 .publication-authors .author-block{margin:0 .35rem;font-size:1.05rem}
@@ -141,6 +138,14 @@ mono,code,.mono{font-family:'JetBrains Mono',monospace}
   box-shadow:0 12px 36px rgba(111,79,192,.08);
 }
 
+/* Note callout */
+.note-callout{
+  display:flex;gap:12px;align-items:flex-start;max-width:880px;margin:1.8rem auto 0;
+  background:var(--lilac-50);border:1px solid var(--lilac-200);
+  border-radius:14px;padding:14px 18px;color:var(--ink-soft);font-size:.95rem;
+}
+.note-callout i{color:var(--lilac-500);margin-top:3px}
+
 /* Stat pills */
 .stat-row{display:flex;flex-wrap:wrap;gap:18px;justify-content:center;margin-top:1.5rem}
 .stat{
@@ -149,6 +154,7 @@ mono,code,.mono{font-family:'JetBrains Mono',monospace}
   box-shadow:0 10px 30px rgba(85,58,153,.06);
 }
 .stat .big{font-family:'Fraunces',serif;font-weight:700;font-size:2.1rem;color:var(--lilac-600);line-height:1}
+.stat .big.cx-big{font-style:italic}
 .stat .lbl{color:var(--ink-soft);font-size:.86rem;margin-top:6px}
 
 /* Slider */
@@ -173,6 +179,15 @@ img-comparison-slider figcaption{
 .before figcaption{left:16px}
 .after figcaption{right:16px;color:#e7dcff}
 .hint{color:var(--ink-soft);font-size:.86rem;text-align:center;margin-top:14px}
+
+/* Demo videos */
+.video-card{
+  background:var(--paper);border:1px solid var(--line);border-radius:20px;
+  overflow:hidden;box-shadow:0 14px 40px rgba(85,58,153,.06);
+}
+.video-card video{display:block;width:100%;height:auto;background:#0e0a1a}
+.video-card .vcap{padding:14px 18px;color:var(--ink-soft);font-size:.92rem}
+.video-card .vcap strong{display:block;color:var(--ink);font-size:1rem;margin-bottom:2px}
 
 /* Chat / reasoning block (JarvisIR-style) */
 .chat{max-width:880px;margin:0 auto}
@@ -231,14 +246,16 @@ img-comparison-slider figcaption{
 /* Comparison grid */
 .cmp-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
 .cmp-grid .cell{text-align:center}
+.cmp-grid .cell .imgwrap{
+  border-radius:12px;border:2px solid var(--line);overflow:hidden;
+  background:var(--lilac-50);line-height:0;
+}
 .cmp-grid .cell img{
   display:block;width:100%;aspect-ratio:1/1;object-fit:cover;
-  border-radius:12px;border:2px solid var(--line);
-  box-sizing:border-box;background:var(--lilac-50);
 }
 .cmp-grid .lab{font-size:.78rem;color:var(--ink-soft);margin-top:6px;font-weight:600}
 .cmp-grid .ours .lab{color:var(--lilac-600);font-weight:800}
-.cmp-grid .ours img{border-color:var(--lilac-400)}
+.cmp-grid .ours .imgwrap{border-color:var(--lilac-400)}
 @media(max-width:768px){.cmp-grid{grid-template-columns:repeat(2,1fr)}}
 
 /* Table */
@@ -260,6 +277,14 @@ pre.bib{
 pre.bib .k{color:#cbb8f6}
 
 footer.footer{background:var(--paper-2);border-top:1px solid var(--line);padding:3rem 1.5rem}
+.visitor-bar{
+  text-align:center;padding:1.4rem 1rem 0;
+}
+.visitor-bar .vlabel{
+  display:block;color:var(--ink-soft);font-size:.78rem;letter-spacing:.1em;
+  text-transform:uppercase;font-weight:700;margin-bottom:10px;
+}
+.visitor-bar img{vertical-align:middle;height:30px}
 .divider-soft{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin:0 auto;max-width:1040px}
 section.section{padding-top:3.2rem;padding-bottom:3.2rem}
 </style>
@@ -279,16 +304,15 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
           <span class="gradient-text display-serif" style="font-size:4.6rem">DiTTo</span>
         </h1>
 
-        <div><span class="venue-badge">Under Review</span></div>
-
         <h2 class="title is-3" style="margin-top:22px;font-weight:700;line-height:1.25">
           Scalable <span style="color:var(--lilac-600)">Order-aware</span> All-in-One<br>
           Image Restoration Agent
         </h2>
 
         <p class="subtitle is-5" style="max-width:760px;margin:14px auto 0">
-          A vision-language agent that schedules restoration experts in the right order,
-          trained from a learned simulator at <strong>O(N)</strong> cost instead of <strong>O(N²)</strong>.
+          A vision-language agent that performs <strong>all-in-one</strong> restoration by scheduling
+          experts in the right order, trained from a learned simulator at <em class="cx">O(N)</em> cost
+          instead of <em class="cx">O(N&sup2;)</em>.
         </p>
 
         <div class="publication-authors" style="margin-top:24px">
@@ -324,8 +348,8 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
         </div>
 
         <div class="stat-row">
-          <div class="stat"><div class="big">O(N)</div><div class="lbl">ORTD generation cost<br>(vs. O(N²) for prior agents)</div></div>
-          <div class="stat"><div class="big">~15×</div><div class="lbl">faster end-to-end adaptation<br>to a new expert</div></div>
+          <div class="stat"><div class="big cx-big">O(N)</div><div class="lbl">ORTD generation cost<br>(vs. <em class="cx">O(N&sup2;)</em> for prior agents)</div></div>
+          <div class="stat"><div class="big">~15&times;</div><div class="lbl">faster end-to-end adaptation<br>to a new expert</div></div>
           <div class="stat"><div class="big">SOTA</div><div class="lbl">multi-degradation quality<br>on MiO-100</div></div>
         </div>
 
@@ -344,8 +368,8 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
       <p class="is-size-5">
         Real images suffer multiple degradations at once, and <strong>the order they are removed
         changes the final quality</strong>. DiTTo casts restoration as sequential expert scheduling by a VLM.
-        Its <strong>Simulator</strong> (∪S-IR + AiO-IQA) builds the optimal-trajectory dataset with only
-        <strong>O(N) simulator steps</strong>, and its <strong>Agent</strong> learns to plan via SFT plus
+        Its <strong>Simulator</strong> (&cup;S-IR + AiO-IQA) builds the optimal-trajectory dataset with only
+        <em class="cx">O(N)</em> simulator steps, and its <strong>Agent</strong> learns to plan via SFT plus
         <strong>Order-aware Restoration Alignment (ORA)</strong>, enabling plug-and-play extension to new
         experts by updating only the lightweight ORA stage.
       </p>
@@ -390,6 +414,46 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
       </div>
     </div>
     <p class="hint"><i class="fas fa-search-plus"></i> Scroll wheel to zoom · <i class="fas fa-arrows-alt-h"></i> drag the divider to compare</p>
+  </div>
+</section>
+
+<div class="divider-soft"></div>
+
+<!-- ===== DEMO VIDEOS ===== -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <span class="eyebrow">Watch it run</span>
+    <div class="center" style="margin-bottom:1.4rem"><h2 class="title is-3 section-title">Demo Videos</h2></div>
+    <p class="subtitle is-6 center" style="max-width:760px;margin:0 auto 2.4rem">
+      Screen recordings of DiTTo perceiving degradations, planning an order, and invoking experts step by step.
+    </p>
+
+    <div class="columns is-centered is-variable is-5">
+      <div class="column is-6">
+        <div class="video-card">
+          <video controls playsinline preload="metadata" poster="./images/demo1_poster.png">
+            <source src="./videos/demo1.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <div class="vcap">
+            <strong>Interactive restoration walk-through</strong>
+            The agent assesses a multi-degraded image and schedules experts in real time.
+          </div>
+        </div>
+      </div>
+      <div class="column is-6">
+        <div class="video-card">
+          <video controls playsinline preload="metadata" poster="./images/demo2_poster.png">
+            <source src="./videos/demo2.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <div class="vcap">
+            <strong>Plug-and-play expert extension</strong>
+            Adding a new expert and re-planning, with only the ORA stage updated.
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -507,7 +571,7 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
       <div class="column is-4">
         <div class="card-soft">
           <h5 class="title is-5 method-title">The cost bottleneck</h5>
-          <p>Prior training-based agents need <strong>O(N²)</strong> real expert calls to build supervision, and
+          <p>Prior training-based agents need <em class="cx">O(N&sup2;)</em> real expert calls to build supervision, and
           re-generate everything when a new expert is added. DiTTo removes this coupling.</p>
         </div>
       </div>
@@ -526,7 +590,7 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
     <div class="columns is-multiline">
       <div class="column is-6">
         <div class="card-soft">
-          <h5 class="title is-5 method-title">∪S-IR <span class="pill">Simulator</span></h5>
+          <h5 class="title is-5 method-title">&cup;S-IR <span class="pill">Simulator</span></h5>
           <p>A single-degradation restoration simulator that cheaply approximates heterogeneous experts via
           action-conditioned clean/degraded feature mixing with adaptive frequency-band gating that removes the
           target degradation while preserving the rest.</p>
@@ -537,7 +601,7 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
           <h5 class="title is-5 method-title">AiO-IQA <span class="pill">Simulator</span></h5>
           <p>An all-in-one scoring model that predicts per-action next-state quality directly from the current
           state and trajectory, picking the highest-scoring action so the whole ORTD trajectory unrolls in
-          <strong>O(N)</strong> steps.</p>
+          <em class="cx">O(N)</em> steps.</p>
         </div>
       </div>
       <div class="column is-6">
@@ -557,8 +621,14 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
       </div>
     </div>
 
+    <div class="note-callout">
+      <i class="fas fa-book-open"></i>
+      <span>This is a high-level overview. For the full architectural design, training objectives, and
+      implementation details, please refer to the paper.</span>
+    </div>
+
     <p class="hint" style="margin-top:18px">
-      Adding a new expert reuses ∪S-IR, AiO-IQA and the SFT checkpoint, updating <strong>only</strong> the efficient ORA stage.
+      Adding a new expert reuses &cup;S-IR, AiO-IQA and the SFT checkpoint, updating <strong>only</strong> the efficient ORA stage.
     </p>
   </div>
 </section>
@@ -573,18 +643,18 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
 
     <div class="card-soft">
       <div class="cmp-grid">
-        <div class="cell"><img width="512" height="512" src="./images/input1.png" alt="input"><div class="lab">Input</div></div>
-        <div class="cell"><img width="512" height="512" src="./images/4k_1.png" alt="4kagent"><div class="lab">4KAgent</div></div>
-        <div class="cell"><img width="512" height="512" src="./images/jarvis_1.png" alt="jarvisir"><div class="lab">JarvisIR</div></div>
-        <div class="cell ours"><img width="512" height="512" src="./images/ditto_1.png" alt="ditto"><div class="lab">DiTTo</div></div>
-        <div class="cell ours"><img width="512" height="512" src="./images/s_ditto_1.png" alt="star ditto"><div class="lab">★DiTTo</div></div>
+        <div class="cell"><div class="imgwrap"><img width="512" height="512" src="./images/input1.png" alt="input"></div><div class="lab">Input</div></div>
+        <div class="cell"><div class="imgwrap"><img width="512" height="512" src="./images/4k_1.png" alt="4kagent"></div><div class="lab">4KAgent</div></div>
+        <div class="cell"><div class="imgwrap"><img width="512" height="512" src="./images/jarvis_1.png" alt="jarvisir"></div><div class="lab">JarvisIR</div></div>
+        <div class="cell ours"><div class="imgwrap"><img width="512" height="512" src="./images/ditto_1.png" alt="ditto"></div><div class="lab">DiTTo</div></div>
+        <div class="cell ours"><div class="imgwrap"><img width="512" height="512" src="./images/s_ditto_1.png" alt="star ditto"></div><div class="lab">★DiTTo</div></div>
       </div>
       <div class="cmp-grid" style="margin-top:12px">
-        <div class="cell"><img width="512" height="512" src="./images/input2.png" alt="input"><div class="lab">Input</div></div>
-        <div class="cell"><img width="512" height="512" src="./images/4k_2.png" alt="4kagent"><div class="lab">4KAgent</div></div>
-        <div class="cell"><img width="512" height="512" src="./images/jarvis_2.png" alt="jarvisir"><div class="lab">JarvisIR</div></div>
-        <div class="cell ours"><img width="512" height="512" src="./images/ditto_2.png" alt="ditto"><div class="lab">DiTTo</div></div>
-        <div class="cell ours"><img width="512" height="512" src="./images/s_ditto_2.png" alt="star ditto"><div class="lab">★DiTTo</div></div>
+        <div class="cell"><div class="imgwrap"><img width="512" height="512" src="./images/input2.png" alt="input"></div><div class="lab">Input</div></div>
+        <div class="cell"><div class="imgwrap"><img width="512" height="512" src="./images/4k_2.png" alt="4kagent"></div><div class="lab">4KAgent</div></div>
+        <div class="cell"><div class="imgwrap"><img width="512" height="512" src="./images/jarvis_2.png" alt="jarvisir"></div><div class="lab">JarvisIR</div></div>
+        <div class="cell ours"><div class="imgwrap"><img width="512" height="512" src="./images/ditto_2.png" alt="ditto"></div><div class="lab">DiTTo</div></div>
+        <div class="cell ours"><div class="imgwrap"><img width="512" height="512" src="./images/s_ditto_2.png" alt="star ditto"></div><div class="lab">★DiTTo</div></div>
       </div>
       <p class="is-size-6" style="margin-top:16px;color:var(--ink-soft)">
         DiTTo removes mixed degradations more thoroughly while preserving natural textures and semantic detail.
@@ -657,7 +727,6 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
     <pre class="bib"><span class="k">@inproceedings</span>{ditto2026,
   title     = {DiTTo: Scalable Order-aware All-in-One Image Restoration Agent},
   author    = {Choi, Seungho and Oh, Jihyong},
-  note      = {Under review},
   year      = {2026}
 }</pre>
   </div>
@@ -674,6 +743,15 @@ section.section{padding-top:3.2rem;padding-bottom:3.2rem}
         Licensed under
         <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.
       </p>
+    </div>
+
+    <!-- Visitor counter (very bottom) -->
+    <div class="visitor-bar">
+      <span class="vlabel">Visitors</span>
+      <a href="https://visitorbadge.io/status?path=ditto.cmlab.project" target="_blank" rel="noopener">
+        <img src="https://api.visitorbadge.io/api/visitors?path=ditto.cmlab.project&label=visitors&countColor=%238b6bd9&style=flat-square"
+             alt="visitor counter">
+      </a>
     </div>
   </div>
 </footer>
